@@ -61,7 +61,8 @@ def master(client, data, row, column):
     #       {...}
     # ]
     # assume we have the same column names at each site
-    categories = [categories.get("result") for categories in results]
+    # categories = [categories.get("result") for categories in results]
+    categories = results
     # [
     #       {
     #           "colname1": [...],
@@ -97,7 +98,7 @@ def master(client, data, row, column):
     info("Waiting for resuls")
     task_id = task.get("id")
     results = wait_and_collect_results(client, task_id)
-    CT = results[0].get("result")
+    CT = results[0]#.get("result")
 
     info("Defining input parameters")
     input_ = {
@@ -116,7 +117,7 @@ def master(client, data, row, column):
         info("Waiting for resuls")
         task_id = task.get("id")
         results = wait_and_collect_results(client, task_id)
-        CT = results[0].get("result")
+        CT = results[0]#.get("result")
         input_["args"] = (CT, row, column)
 
     input_ = {"method":"remove_random_values", "args":(CT, )}
@@ -129,7 +130,7 @@ def master(client, data, row, column):
     info("Waiting for resuls")
     task_id = task.get("id")
     results = wait_and_collect_results(client, task_id)
-    CT = results[0].get("result")
+    CT = results[0]#.get("result")
 
     info("master algorithm complete")
 
@@ -138,11 +139,11 @@ def master(client, data, row, column):
 
 def RPC_init(df, rows, columns, categories):
 
-    LCT = compute_ct(df, rows, columns)
+    LCT = compute_ct(df, rows, columns, categories)
 
     # adds missing data with 0s
-    LCT = add_missing_data(data=LCT,rows=rows,
-                           columns=columns, categories=categories)
+    # LCT = add_missing_data(data=LCT,rows=rows,
+    #                        columns=columns, categories=)
     # print(LCT)
     # we need to check if all columns contain all categories
     # 1) check if column or row (from the categories) is present in LCT

@@ -53,7 +53,8 @@ def master(client, data, row, column):
     #       {...}
     # ]
     # assume we have the same column names at each site
-    categories = [categories.get("result") for categories in results]
+    # categories = [categories.get("result") for categories in results]
+    categories = results
     # [
     #       {
     #           "colname1": [...],
@@ -92,8 +93,9 @@ def master(client, data, row, column):
     results = wait_and_collect_results(client, task.get("id"))
 
     local_cts = []
-    for result in results:
-        local_cts.append(result.get("result"))
+    # for result in results:
+    #     local_cts.append(result.get("result"))
+    local_cts = results
 
     global_ct = reduce(lambda x, y: x.add(y, fill_value=0), local_cts)
     info("master algorithm complete")
@@ -102,12 +104,13 @@ def master(client, data, row, column):
     return global_ct
 
 
-def RPC_compute_ct(df, row, column, categories):
+def RPC_compute_ct(df, row, column, categories=None):
     list1 = [df[key] for key in row]
     list2 = [df[key] for key in column]
     CT = pd.crosstab(list1, list2, dropna=False)
-    CT = add_missing_data(data=CT, rows=row,
-                          columns=column, categories=categories)
+    if categories:
+        CT = add_missing_data(data=CT, rows=row,
+                            columns=column, categories=categories)
     return CT
 
 

@@ -5,7 +5,7 @@ LABEL maintainer = "H.Alradhi <h.alradhi@iknl.nl>"
 
 # This is a placeholder that should be overloaded by invoking
 # docker build with '--build-arg PKG_NAME=...'
-ARG PKG_NAME="v6-ctable-py"
+ARG PKG_NAME="ctable"
 
 # install federated algorithm
 COPY . /app
