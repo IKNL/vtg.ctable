@@ -23,7 +23,7 @@ client.setup_encryption(None)
 # algorithm input
 input_ = {
     "master": True,
-    "method": "simple_master",
+    "method": "simple_master", # or "round_robin_master"
     "args": [["Sex"], ["Age"]]
 }
 
