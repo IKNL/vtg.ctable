@@ -1,11 +1,13 @@
 from vantage6.tools.mock_client import ClientMockProtocol
-from vantage6.tools.container_client import ClientContainerProtocol
+# from vantage6.tools.container_client import ClientContainer
 
 import time
 
 ## Mock client
 client = ClientMockProtocol(["./local/a.csv", "./local/b.csv", "./local/c.csv"],
-                             "ct")
+                             "ctable")
+
+# client = ClientMockProtocol(['./local/data.csv', './local/data.csv'], "ctable")
 
 # retrieve organizations
 # organizations = client.get_organizations_in_my_collaboration()
@@ -46,13 +48,14 @@ client = ClientMockProtocol(["./local/a.csv", "./local/b.csv", "./local/c.csv"],
 # fr = pickle.loads(base64s_to_bytes(results[0].get("result")))
 # print(fr)
 
-from ct.round_robin_ct import master as robin_master
-from ct import RPC_get_unique_categories_from_columns
-from ct.simple_ct import master as simple_master
-result = robin_master(client, "", ["aspiration", "drive_wheels"], ["fuel_type", "body_style"])
+from ctable.round_robin import master as robin_master
+from ctable import RPC_get_unique_categories_from_columns
+from ctable.simple import master as simple_master
+# result = robin_master(client, "", ["fuel_type", "num_doors"], ["make", "aspiration"])
+result = simple_master(client, "", ["fuel_type", "num_doors"], ["make", "aspiration"])
 # result = RPC_get_unique_categories_from_columns(client.datasets[0])
 # print(result)
-# result = simple_master(client, "", row=["aspiration", "drive_wheels"], column=["fuel_type", "body_style"])
+# result = simple_master(client, "", row=["Sex"], column=["Age"])
 print(result)
 
 # [x] temporary storage

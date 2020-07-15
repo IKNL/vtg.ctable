@@ -14,27 +14,16 @@ import json
 import pandas as pd
 import numpy as np
 import pickle
-
+import random
 from pathlib import Path
 
 from vantage6.tools.util import info, warn
 from vantage6.common import ( bytes_to_base64s, base64s_to_bytes )
-from ctable.simple import RPC_compute_ct as compute_ct
-
-from itertools import product
-
-def wait_and_collect_results(client, task_id):
-    task = client.get_task(task_id)
-    while not task.get("complete"):
-        task = client.get_task(task_id)
-        info("Waiting for results")
-        time.sleep(1)
-
-    info("Obtaining results")
-    results = client.get_results(task_id=task.get("id"))
-    return results
-
-
+from ctable.simple import (
+    RPC_compute_ct as compute_ct,
+    add_missing_data,
+    wait_and_collect_results
+)
 
 def master(client, data, row, column):
     """Master algoritm.
@@ -159,7 +148,7 @@ def RPC_init(df, rows, columns, categories):
     # 1) check if column or row (from the categories) is present in LCT
     # 2) if not present add it do the dataframe with 0's
 
-    Z_ = 365
+    Z_ = random.randint(1,365)
 
     # dimensions would be number of columns times the corrensponding number
     # of categories
@@ -190,23 +179,6 @@ def RPC_get_unique_categories_from_columns(df):
     for column in df_cat:
         result[column]=df_cat[column].unique()
     return result
-
-def add_missing_data(data, rows, columns, categories):
-    row_res = product(*[categories.get(row) for row in rows])
-    row_res = list(row_res)
-    observed_r = list(data.index)
-    column_res = product(*[categories.get(col) for col in columns])
-    column_res = list(column_res)
-    observed_c = list(data.columns)
-    for row in row_res:
-        if row not in observed_r:
-            data.loc[row,:] = (0,)*len(data.columns)
-    for col in column_res:
-        if col not in observed_c:
-            data[col] = [0]*len(data.index)
-    data = data.sort_index(axis=0)
-    data = data.sort_index(axis=1)
-    return data
 
 def RPC_add_table(df, incoming_table, row, column):
     i_table = incoming_table.fillna(0)
